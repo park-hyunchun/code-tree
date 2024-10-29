@@ -6,6 +6,7 @@ import java.util.StringTokenizer;
 public class Main {
 
     static int n;
+    static int[] mergedArr;
 
     public static void main(String[] args) throws IOException {
         
@@ -15,6 +16,7 @@ public class Main {
         n = Integer.parseInt(br.readLine());
 
         int[] arr = new int[n];
+        mergedArr = new int[n];
 
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < n; i++) {
@@ -39,7 +41,6 @@ public class Main {
     }
 
     private static void merge(int[] arr, int low, int mid, int high) {
-        int[] mergedArr = new int[arr.length];
         int i = low;
         int j = mid + 1;
 
