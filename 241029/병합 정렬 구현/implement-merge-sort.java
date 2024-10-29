@@ -39,7 +39,7 @@ public class Main {
     }
 
     private static void merge(int[] arr, int low, int mid, int high) {
-        int[] mergedArr = new int[n];
+        int[] mergedArr = new int[arr.length];
         int i = low;
         int j = mid + 1;
 
