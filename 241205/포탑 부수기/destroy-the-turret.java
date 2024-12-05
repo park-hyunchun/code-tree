@@ -153,11 +153,15 @@ public class Main {
 			return false;
 		}
 		
-		while (!shortcut.isEmpty()) {
+		shortcut.poll();
+		
+		while (shortcut.size() != 1) {
 			int[] cur = shortcut.poll();
 			isEffect[cur[0]][cur[1]] = true;
 			map[cur[0]][cur[1]] = Math.max(0, map[cur[0]][cur[1]] - (damage/2));
 		}
+		
+		shortcut.poll();
 		
 		return true;
 	}
@@ -166,7 +170,9 @@ public class Main {
 		int r = powerfulTurretR;
 		int c = powerfulTurretC;
 		
-		while (parent[r][c][0] != weakTurretR || parent[r][c][1] != weakTurretC) {
+		shortcut.add(new int[] { r, c });
+		
+		while (r != weakTurretR || c != weakTurretC) {
 			int[] cur = parent[r][c];
 			shortcut.add(cur);
 			r = cur[0];
@@ -176,8 +182,9 @@ public class Main {
 
 	private static void findPowerfulTurret() {
 		int powerfulPower = -1;
-		int r = 0;
-		int c = 0;
+		int sum = 0;
+		int r = -1;
+		int c = -1;
 		
 		for (int i = 0; i < N; i++) {
 			for (int j = 0; j < M; j++) {
@@ -189,12 +196,25 @@ public class Main {
 				}
 				if (map[i][j] > powerfulPower) {
 					powerfulPower = map[i][j];
+					sum = i + j;
 					r = i;
 					c = j;
 				} else if (map[i][j] == powerfulPower) {
 					if (attackTime[i][j] < attackTime[r][c]) {
+						sum = i + j;
 						r = i;
 						c = j;
+					} else if (attackTime[i][j] == attackTime[r][c]) {
+						if ((i + j) < sum) {
+							sum = i + j;
+							r = i;
+							c = j;
+						} else if ((i + j) == sum) {
+							if (j < c) {
+								r = i;
+								c = j;
+							}
+						}
 					}
 				}
 			}
@@ -209,21 +229,34 @@ public class Main {
 
 	private static void findWeakTurret() {
 		int minPower = Integer.MAX_VALUE;
-		int r = 0;
-		int c = 0;
+		int sum = -1;
+		int r = -1;
+		int c = -1;
 		for (int i = N-1; i >= 0; i--) {
 			for (int j = M-1; j >= 0; j--) {
 				if (map[i][j] == 0) {
 					continue;
 				}
+				
 				if (map[i][j] < minPower) {
 					minPower = map[i][j];
+					sum = i + j;
 					r = i;
 					c = j;
 				} else if (map[i][j] == minPower) {
 					if (attackTime[i][j] > attackTime[r][c]) {
+						sum = i + j;
 						r = i;
 						c = j;
+					} else if (attackTime[i][j] == attackTime[r][c]) {
+						if ((i + j) > sum) {
+							sum = i + j;
+							r = i;
+							c = j;
+						} else if ((i + j) == sum) {
+							r = i;
+							c = j;
+						}
 					}
 				}
 			}
