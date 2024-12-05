@@ -52,6 +52,9 @@ public class Main {
 //			printMap();
 			refair();
 //			printMap();
+			if (isAlone()) {
+				break;
+			}
 		}
 		
 		int result = 0;
@@ -65,6 +68,21 @@ public class Main {
 		
 		System.out.println(result);
 
+	}
+
+	private static boolean isAlone() {
+		int cnt = 0;
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < M; j++) {
+				if (map[i][j] > 0) {
+					cnt++;
+					if (cnt > 1) {
+						return false;
+					}
+				}
+			}
+		}
+		return true;
 	}
 
 	private static void refair() {
