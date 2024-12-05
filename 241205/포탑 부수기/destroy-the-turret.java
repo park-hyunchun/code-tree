@@ -90,6 +90,9 @@ public class Main {
 			if (map[nr][nc] == 0) {
 				continue;
 			}
+			if (nr == weakTurretR && nc == weakTurretC) {
+				continue;
+			}
 			isEffect[nr][nc] = true;
 			map[nr][nc] = Math.max(0, map[nr][nc] - (damage/2));
 		}
