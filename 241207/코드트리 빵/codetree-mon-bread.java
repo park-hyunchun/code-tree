@@ -61,10 +61,12 @@ public class Main {
 		while (!allIn()) {
 			move();
 			isIn();
-			if (minute < m) {				
+//			printMap();
+			if (minute < m) {
 				goBaseCamp();
 			}
 			minute++;
+//			printMap();
 		}
 		System.out.println(minute);
 
@@ -72,7 +74,7 @@ public class Main {
 
 	private static boolean allIn() {
 		for (int i = 0; i < m; i++) {
-			if(!people[i].isIn) {
+			if (!people[i].isIn) {
 				return false;
 			}
 		}
@@ -86,11 +88,11 @@ public class Main {
 		int distance;
 		int x = -1;
 		int y = -1;
-		
+
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
 				if (map[i][j] == 1) {
-					distance = Math.abs(goalX - i) + Math.abs(goalY - j);
+					distance = getDistance(i, j, goalX, goalY);
 					if (distance < minDistance) {
 						minDistance = distance;
 						x = i;
@@ -99,11 +101,47 @@ public class Main {
 				}
 			}
 		}
-		
+
 		people[minute].x = x;
 		people[minute].y = y;
 		map[x][y] = 3;
+
+	}
+
+	private static int getDistance(int startX, int startY, int goalX, int goalY) {
+		visited = new boolean[n][n];
+		que = new LinkedList<>();
+
+		visited[startX][startY] = true;
+		que.offer(new int[] { startX, startY, 0 });
+
+		int result = Integer.MAX_VALUE;
+
+		while (!que.isEmpty()) {
+			
+			int[] cur = que.poll();
+			int r = cur[0];
+			int c = cur[1];
+			int cnt = cur[2];
+			
+			if (r == goalX && c == goalY) {
+				result = cnt;
+				break;
+			}
+			
+			for (int d = 0; d < 4; d++) {
+				int nr = r + dr[d];
+				int nc = c + dc[d];
+				
+				if (check(nr, nc) && !visited[nr][nc] && map[nr][nc] < 3) {
+					visited[nr][nc] = true;
+					que.offer(new int[] { nr, nc, cnt + 1 });
+				}
+			}
 		
+		}
+
+		return result;
 	}
 
 	private static void isIn() {
@@ -112,20 +150,20 @@ public class Main {
 		int goalX;
 		int goalY;
 		for (int i = 0; i < m; i++) {
-			
+
 			if (people[i].isIn) {
 				continue;
 			}
-			
+
 			x = people[i].x;
 			y = people[i].y;
 			goalX = people[i].goalX;
 			goalY = people[i].goalY;
-			
+
 			if (x == -1 || y == -1) {
 				continue;
 			}
-			
+
 			if (x == goalX && y == goalY) {
 				map[x][y] = 4;
 				people[i].isIn = true;
@@ -142,29 +180,32 @@ public class Main {
 			if (people[i].isIn) {
 				continue;
 			}
-			
+
 			if (people[i].x == -1 || people[i].x == -1) {
 				continue;
 			}
-			
+
 			x = people[i].x;
 			y = people[i].y;
 			goalX = people[i].goalX;
 			goalY = people[i].goalY;
-			
+
 			getShortcut(x, y, goalX, goalY);
-			
+
 			int r = goalX;
 			int c = goalY;
-			
+
+//			System.out.println(parent[r][c][0] + " " + parent[r][c][1]);
+
 			while (!(parent[r][c][0] == x && parent[r][c][1] == y)) {
-				r = parent[r][c][0];
-				c = parent[r][c][1];
+				int[] cur = parent[r][c];
+				r = cur[0];
+				c = cur[1];
 			}
-			
+
 			people[i].x = r;
 			people[i].y = c;
-			
+
 		}
 	}
 
@@ -177,31 +218,30 @@ public class Main {
 		que.offer(new int[] { startX, startY });
 
 		while (!que.isEmpty()) {
-			
+
 			int[] cur = que.poll();
 			int r = cur[0];
 			int c = cur[1];
-			
+
 			if (r == goalX && c == goalY) {
 				break;
 			}
-			
+
 			for (int d = 0; d < 4; d++) {
 				int nr = r + dr[d];
 				int nc = c + dc[d];
-				
+
 				if (check(nr, nc) && !visited[nr][nc] && map[nr][nc] < 3) {
 					visited[nr][nc] = true;
 					parent[nr][nc] = new int[] { r, c };
 					que.offer(new int[] { nr, nc });
 				}
-				
+
 			}
-			
+
 		}
 
 	}
-
 
 	private static void printMap() {
 		for (int i = 0; i < n; i++) {
@@ -216,5 +256,5 @@ public class Main {
 	private static boolean check(int r, int c) {
 		return r >= 0 && r < n && c >= 0 && c < n;
 	}
-	
+
 }
