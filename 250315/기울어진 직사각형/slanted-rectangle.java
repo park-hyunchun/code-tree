@@ -53,11 +53,17 @@ public class Main {
 
         sum += map[r][c];
 
-        for (int d = dir; d < 4; d++) {
-            int nr = r + dr[d];
-            int nc = c + dc[d];
-            if(check(nr, nc)) {
-                makeSquare(nr, nc, sum, d);
+        
+        int nr = r + dr[dir];
+        int nc = c + dc[dir];
+        if(check(nr, nc)) {
+            makeSquare(nr, nc, sum, dir);
+        }
+        if (dir != 3) {
+            nr = r +dr[dir+1];
+            nc = c +dc[dir+1];
+            if (check(nr, nc)) {
+                makeSquare(nr, nc, sum, dir+1);
             }
         }
     }
