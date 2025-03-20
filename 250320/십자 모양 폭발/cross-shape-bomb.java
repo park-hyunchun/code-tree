@@ -72,23 +72,17 @@ public class Main {
             map[0][i] = 0;
         }
 
-        int startIdx = 0;
-        int endIdx = N-1;
         for (int i = 0; i < N; i++) {
-            if (map[i][c] == 0) {
-                startIdx = i-1;
-            } else if (map[i][c] != 0 && startIdx != 0) {
-                endIdx = i-1;
+            for (int j = N - 1; j > 0; j--) {
+                if (map[j][c] == 0) {
+                    int k = j - 1;
+                    while (k >= 0 && map[k][c] == 0) k--; // 위에서 0이 아닌 값을 찾기
+                    if (k >= 0) {
+                        map[j][c] = map[k][c];
+                        map[k][c] = 0;
+                    }
+                }
             }
-        }
-
-        if (startIdx < 0) {
-            return;
-        }
-
-        for (int i = 0; i <= startIdx; i++) {
-            map[endIdx--][c] = map[startIdx][c];
-            map[startIdx--][c] = 0;
         }
 
     }
